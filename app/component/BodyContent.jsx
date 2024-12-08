@@ -1,7 +1,15 @@
-import React from "react";
-import { Calendar, ArrowRight, Play } from "lucide-react";
+import React, { useState } from "react";
+import {
+  Calendar,
+  ArrowRight,
+  ChevronDown,
+  ChevronUp,
+  ChevronRight,
+} from "lucide-react";
+import confetti from "canvas-confetti";
 import TextToImageGenerator from "./TextToVideoAI";
 import ChatApp from "./Chatbot";
+import Tour3D from "./Panorama";
 
 const TimelineEvent = ({ year, title, content, significance, media }) => (
   <div className="flex gap-6 mb-12">
@@ -59,6 +67,100 @@ const TimelineEvent = ({ year, title, content, significance, media }) => (
 );
 
 const BodyContent = () => {
+  const [activeStep, setActiveStep] = useState(null);
+
+  const fireConfetti = () => {
+    // Bắn pháo hoa từ nhiều hướng
+    const duration = 3 * 1000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+    function randomInRange(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    const interval = setInterval(function () {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      const particleCount = 50 * (timeLeft / duration);
+
+      // Bắn từ góc trái
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: 0, y: 1 },
+      });
+
+      // Bắn từ góc phải
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: 1, y: 1 },
+      });
+
+      // Bắn từ giữa
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: 0.5, y: 0.7 },
+      });
+    }, 250);
+
+    // Thêm hiệu ứng mưa vàng
+    const count = 200;
+    const defaults2 = {
+      origin: { y: 0.7 },
+      colors: ["#FFD700", "#FFA500", "#FF0000"], // Màu vàng, cam, đỏ
+    };
+
+    function fire(particleRatio, opts) {
+      confetti({
+        ...defaults2,
+        ...opts,
+        particleCount: Math.floor(count * particleRatio),
+      });
+    }
+
+    fire(0.25, {
+      spread: 26,
+      startVelocity: 55,
+    });
+
+    fire(0.2, {
+      spread: 60,
+    });
+
+    fire(0.35, {
+      spread: 100,
+      decay: 0.91,
+      scalar: 0.8,
+    });
+
+    fire(0.1, {
+      spread: 120,
+      startVelocity: 25,
+      decay: 0.92,
+      scalar: 1.2,
+    });
+
+    fire(0.1, {
+      spread: 120,
+      startVelocity: 45,
+    });
+  };
+
+  const toggleStep = (index) => {
+    setActiveStep(activeStep === index ? null : index);
+    // Khi người dùng click vào mục "Chiến thắng" (index 5)
+    if (index === 5 && activeStep !== index) {
+      fireConfetti();
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
@@ -102,6 +204,34 @@ const BodyContent = () => {
         </div>
 
         <TimelineEvent
+          year="1950"
+          title="Chiến dịch Biên giới"
+          media={{
+            type: "image",
+            url: "https://img.loigiaihay.com/picture/2020/0514/bac-ho-tham-mot-don-vi-tham-gia-chien-dich-bien-gioi-thu-dong-1950.jpg",
+          }}
+          content={
+            <div>
+              <p>
+                Chiến dịch diễn ra từ tháng 9 đến tháng 10 năm 1950 với các mục
+                tiêu chiến lược:
+              </p>
+              <ul className="list-disc pl-6 space-y-2 mt-2">
+                <li>Tiêu diệt một phần sinh lực địch</li>
+                <li>Giải phóng vùng biên giới quan trọng</li>
+                <li>Khai thông đường liên lạc quốc tế</li>
+              </ul>
+            </div>
+          }
+          significance={[
+            "Quân sự: Tiêu diệt và làm tan rã một số lớn sinh lực địch, mở rộng vùng giải phóng từ biên giới Việt-Trung xuống đồng bằng Bắc Bộ",
+            "Chiến lược: Mở thông tuyến đường liên lạc quốc tế với Trung Quốc và Liên Xô, tạo điều kiện thuận lợi cho việc tiếp nhận viện trợ",
+            "Chính trị: Nâng cao vị thế và uy tín của Việt Nam trên trường quốc tế",
+            "Là chiến dịch lớn đầu tiên và là bước ngoặt quan trọng trong cuộc kháng chiến",
+          ]}
+        />
+
+        <TimelineEvent
           year="1951"
           title="Đại hội Đảng lần thứ II"
           media={{
@@ -127,34 +257,6 @@ const BodyContent = () => {
             "Thống nhất đường lối đấu tranh cách mạng",
             "Nâng cao uy tín của Đảng trên trường quốc tế",
             "Tạo cơ sở chính trị vững chắc cho cuộc kháng chiến",
-          ]}
-        />
-
-        <TimelineEvent
-          year="1950"
-          title="Chiến dịch Biên giới"
-          media={{
-            type: "image",
-            url: "https://img.loigiaihay.com/picture/2020/0514/bac-ho-tham-mot-don-vi-tham-gia-chien-dich-bien-gioi-thu-dong-1950.jpg",
-          }}
-          content={
-            <div>
-              <p>
-                Chiến dịch diễn ra từ tháng 9 đến tháng 10 năm 1950 với các mục
-                tiêu chiến lược:
-              </p>
-              <ul className="list-disc pl-6 space-y-2 mt-2">
-                <li>Tiêu diệt một phần sinh lực địch</li>
-                <li>Giải phóng vùng biên giới quan trọng</li>
-                <li>Khai thông đường liên lạc quốc tế</li>
-              </ul>
-            </div>
-          }
-          significance={[
-            "Quân sự: Tiêu diệt và làm tan rã một số lớn sinh lực địch, mở rộng vùng giải phóng từ biên giới Việt-Trung xuống đồng bằng Bắc Bộ",
-            "Chiến lược: Mở thông tuyến đường liên lạc quốc tế với Trung Quốc và Liên Xô, tạo điều kiện thuận lợi cho việc tiếp nhận viện trợ",
-            "Chính trị: Nâng cao vị thế và uy tín của Việt Nam trên trường quốc tế",
-            "Là chiến dịch lớn đầu tiên và là bước ngoặt quan trọng trong cuộc kháng chiến",
           ]}
         />
 
@@ -231,63 +333,250 @@ const BodyContent = () => {
           }}
           content={
             <div>
-              <p className="font-bold mb-2">
-                Chiến dịch lịch sử Điện Biên Phủ (13/3 - 7/5/1954):
-              </p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Là đỉnh cao của chiến dịch Đông Xuân 1953-1954</li>
-                <li>56 ngày đêm chiến đấu anh dũng</li>
-                <li>Tiêu diệt toàn bộ tập đoàn cứ điểm mạnh nhất của Pháp</li>
-                <li>Đánh bại hoàn toàn kế hoạch Nava</li>
-                <li>Tạo bước ngoặt quyết định kết thúc cuộc kháng chiến</li>
+              <h2 className="font-bold mb-2">CÁC CÔNG TÁC CHUẨN BỊ</h2>
+              <ul className="space-y-2">
+                <li
+                  className="flex items-center justify-between p-2 hover:bg-gray-50 rounded cursor-pointer"
+                  onClick={() => toggleStep(1)}
+                >
+                  <div className="flex items-center gap-2">
+                    <ChevronRight className="text-red-600" />
+                    <span className="font-bold">Chuẩn bị chiến lược</span>
+                  </div>
+                  {activeStep === 1 ? (
+                    <ChevronUp className="h-5 w-5" />
+                  ) : (
+                    <ChevronDown className="h-5 w-5" />
+                  )}
+                </li>
+                {activeStep === 1 && (
+                  <ul className="ml-6 mt-2 space-y-2">
+                    <li className="font-bold">Đánh giá tình hình:</li>
+                    <ul className="list-disc pl-6">
+                      <li>
+                        Đánh giá thực tế của địch và ta, nhận thấy Điện Biên Phủ
+                        là vị trí quan trọng.
+                      </li>
+                      <li>
+                        Pháp xây dựng Điện Biên Phủ thành tập đoàn cứ điểm mạnh
+                        mẽ.
+                      </li>
+                    </ul>
+                    <li className="font-bold">Xác định mục tiêu:</li>
+                    <ul className="list-disc pl-6">
+                      <li>
+                        Tiêu diệt tập đoàn cứ điểm Điện Biên Phủ và buộc Pháp
+                        đàm phán chấm dứt chiến tranh.
+                      </li>
+                    </ul>
+                  </ul>
+                )}
+
+                <li
+                  className="flex items-center justify-between p-2 hover:bg-gray-50 rounded cursor-pointer"
+                  onClick={() => toggleStep(2)}
+                >
+                  <div className="flex items-center gap-2">
+                    <ChevronRight className="text-red-600" />
+                    <span className="font-bold">Chuẩn bị hậu cần</span>
+                  </div>
+                  {activeStep === 2 ? (
+                    <ChevronUp className="h-5 w-5" />
+                  ) : (
+                    <ChevronDown className="h-5 w-5" />
+                  )}
+                </li>
+                {activeStep === 2 && (
+                  <ul className="list-disc pl-6">
+                    <li className="font-bold">
+                      Huy động lực lượng và vật chất:
+                    </li>
+                    <ul className="list-disc pl-6">
+                      <li>
+                        Hàng trăm nghìn dân công, bộ đội vận chuyển lương thực,
+                        vũ khí từ hậu phương.
+                      </li>
+                      <li>
+                        Sử dụng tối đa đường mòn Hồ Chí Minh để chuyển vận hậu
+                        cần.
+                      </li>
+                    </ul>
+                    <li className="font-bold">Xây dựng hệ thống kho tàng:</li>
+                    <ul className="list-disc pl-6">
+                      <li>
+                        Xây dựng kho tàng dọc tuyến đường để đảm bảo cung cấp
+                        liên tục cho quân đội.
+                      </li>
+                    </ul>
+                  </ul>
+                )}
+
+                <li
+                  className="flex items-center justify-between p-2 hover:bg-gray-50 rounded cursor-pointer"
+                  onClick={() => toggleStep(3)}
+                >
+                  <div className="flex items-center gap-2">
+                    <ChevronRight className="text-red-600" />
+                    <span className="font-bold">Chuẩn bị tiến công</span>
+                  </div>
+                  {activeStep === 3 ? (
+                    <ChevronUp className="h-5 w-5" />
+                  ) : (
+                    <ChevronDown className="h-5 w-5" />
+                  )}
+                </li>
+                {activeStep === 3 && (
+                  <ul className="list-disc pl-6">
+                    <li className="font-bold">Tổ chức lực lượng:</li>
+                    <ul className="list-disc pl-6">
+                      <li>
+                        Phân công cụ thể cho các đơn vị bộ binh, pháo binh, công
+                        binh.
+                      </li>
+                      <li>
+                        Huấn luyện kỹ thuật và chiến thuật để thích nghi với
+                        điều kiện chiến đấu.
+                      </li>
+                    </ul>
+                    <li className="font-bold">
+                      Chiến thuật “vây lấn, đánh lấn”:
+                    </li>
+                    <ul className="list-disc pl-6">
+                      <li>
+                        Tiến hành vây hãm từng bước, lấn dần vào các cứ điểm của
+                        địch.
+                      </li>
+                    </ul>
+                  </ul>
+                )}
+
+                <li
+                  className="flex items-center justify-between p-2 hover:bg-gray-50 rounded cursor-pointer"
+                  onClick={() => toggleStep(4)}
+                >
+                  <div className="flex items-center gap-2">
+                    <ChevronRight className="text-red-600" />
+                    <span className="font-bold">Tiến công</span>
+                  </div>
+                  {activeStep === 4 ? (
+                    <ChevronUp className="h-5 w-5" />
+                  ) : (
+                    <ChevronDown className="h-5 w-5" />
+                  )}
+                </li>
+                {activeStep === 4 && (
+                  <ul className="list-disc pl-6">
+                    <li className="font-bold">
+                      Đợt tiến công thứ nhất (13-17/3/1954):
+                    </li>
+                    <ul className="list-disc pl-6">
+                      <li>
+                        Mở màn, phá vỡ phòng tuyến ngoại vi, tập trung vào các
+                        cứ điểm Him Lam và Độc Lập.
+                      </li>
+                    </ul>
+
+                    <li className="font-bold">
+                      Đợt tiến công thứ hai (30/3 - 26/4/1954):
+                    </li>
+                    <ul className="list-disc pl-6">
+                      <li>
+                        Chiếm các cứ điểm trọng yếu ở trung tâm và phía đông nam
+                        như C1, C2, D1, và E1.
+                      </li>
+                    </ul>
+
+                    <li className="font-bold">
+                      Đợt tiến công thứ ba (1-7/5/1954):
+                    </li>
+                    <ul className="list-disc pl-6">
+                      <li>
+                        Tổng tấn công, tiêu diệt hoàn toàn tập đoàn cứ điểm,
+                        đánh chiếm Đồi A1 và Hồng Cúm.
+                      </li>
+                    </ul>
+                  </ul>
+                )}
+
+                <li
+                  className="flex items-center justify-between p-2 hover:bg-gray-50 rounded cursor-pointer"
+                  onClick={() => toggleStep(5)}
+                >
+                  <div className="flex items-center gap-2">
+                    <ChevronRight className="text-red-600" />
+                    <span className="font-bold">Chiến thắng</span>
+                  </div>
+                  {activeStep === 5 ? (
+                    <ChevronUp className="h-5 w-5" />
+                  ) : (
+                    <ChevronDown className="h-5 w-5" />
+                  )}
+                </li>
+                {activeStep === 5 && (
+                  <ul className="list-disc pl-6">
+                    <li>
+                      Ngày 7/5/1954, tập đoàn cứ điểm Điện Biên Phủ bị tiêu diệt
+                      hoàn toàn, quân Pháp đầu hàng.
+                    </li>
+                    <li>
+                      Chiến thắng chấn động dư luận thế giới, buộc Pháp ký Hiệp
+                      định Genève.
+                    </li>
+                  </ul>
+                )}
               </ul>
             </div>
           }
           significance={[
-            "Quân sự: Tiêu diệt và bắt sống toàn bộ lực lượng tinh nhuệ của Pháp tại Điện Biên Phủ",
-            "Chiến lược: Làm phá sản hoàn toàn kế hoạch Nava và buộc Pháp phải ký Hiệp định Genève",
-            "Chính trị: Đánh dấu thắng lợi của cuộc kháng chiến chống thực dân Pháp",
-            "Quốc tế: Tác động mạnh mẽ đến phong trào giải phóng dân tộc thế giới",
+            "Chiến thắng Điện Biên Phủ không chỉ là một chiến thắng quân sự vang dội mà còn là một chiến thắng về mặt chính trị và ngoại giao.",
+            "Nó chứng minh tinh thần quyết tâm và khả năng tổ chức, chiến đấu của quân đội và nhân dân Việt Nam dưới sự lãnh đạo của Đảng và Chủ tịch Hồ Chí Minh.",
+            "Chiến thắng này đã trở thành biểu tượng của ý chí quật cường và khát vọng tự do của dân tộc Việt Nam.",
           ]}
         />
 
         {/* Phần kết luận cập nhật */}
-        <div className="bg-red-50 rounded-lg p-6 mt-12">
-          <h2 className="text-2xl font-bold mb-4">
-            Thắng lợi và ý nghĩa lịch sử
-          </h2>
-          <ul className="space-y-3">
-            <li className="flex items-start gap-2">
-              <ArrowRight className="mt-1 text-red-600" />
-              <span>
-                Chiến thắng Điện Biên Phủ và thắng lợi của chiến dịch Đông Xuân
-                1953-1954 đã buộc Pháp phải ký Hiệp định Genève, chấm dứt chiến
-                tranh ở Đông Dương.
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <ArrowRight className="mt-1 text-red-600" />
-              <span>
-                Hiệp định Genève (1954) công nhận độc lập, chủ quyền, thống nhất
-                và toàn vẹn lãnh thổ của ba nước Đông Dương.
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <ArrowRight className="mt-1 text-red-600" />
-              <span>
-                Miền Bắc được hoàn toàn giải phóng, tạo cơ sở vững chắc cho cuộc
-                đấu tranh thống nhất nước nhà.
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <ArrowRight className="mt-1 text-red-600" />
-              <span>
-                Thắng lợi là kết quả của đường lối đúng đắn của Đảng, sự lãnh
-                đạo tài tình của Chủ tịch Hồ Chí Minh và sức mạnh đại đoàn kết
-                toàn dân tộc.
-              </span>
-            </li>
-          </ul>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+          <div className="bg-red-50 rounded-lg p-6">
+            <h2 className="text-2xl font-bold mb-4">
+              Thắng lợi và ý nghĩa lịch sử
+            </h2>
+            <ul className="space-y-3">
+              <li className="flex items-start gap-2">
+                <ArrowRight className="mt-1 text-red-600" />
+                <span>
+                  Chiến thắng Điện Biên Phủ và thắng lợi của chiến dịch Đông
+                  Xuân 1953-1954 đã buộc Pháp phải ký Hiệp định Genève, chấm dứt
+                  chiến tranh ở Đông Dương.
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <ArrowRight className="mt-1 text-red-600" />
+                <span>
+                  Hiệp định Genève (1954) công nhận độc lập, chủ quyền, thống
+                  nhất và toàn vẹn lãnh thổ của ba nước Đông Dương.
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <ArrowRight className="mt-1 text-red-600" />
+                <span>
+                  Miền Bắc được hoàn toàn giải phóng, tạo cơ sở vững chắc cho
+                  cuộc đấu tranh thống nhất nước nhà.
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <ArrowRight className="mt-1 text-red-600" />
+                <span>
+                  Thắng lợi là kết quả của đường lối đúng đắn của Đảng, sự lãnh
+                  đạo tài tình của Chủ tịch Hồ Chí Minh và sức mạnh đại đoàn kết
+                  toàn dân tộc.
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="rounded-lg overflow-hidden">
+            <Tour3D />
+          </div>
         </div>
 
         <div className="mt-12 mb-12">
