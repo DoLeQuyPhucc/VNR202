@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import Replicate from "replicate";
 
 const replicate = new Replicate({
-  auth: "r8_XmkuxgWFEVUyvl5kGvuNypvuf10cOgO0c2Ipx",
+  auth: process.env.REPLICATE_API_TOKEN,
 });
 
 // In production and preview deployments (on Vercel), the VERCEL_URL environment variable is set.

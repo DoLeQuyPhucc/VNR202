@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Send, Bot, User, Trash2 } from "lucide-react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const genAI = new GoogleGenerativeAI("AIzaSyD7QkI0e_P1igH4Cjdp3ZKoACFr5EcRDgU");
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
 const predefinedPrompts = [
   "Tóm tắt diễn biến chính của chiến dịch Điện Biên Phủ",
