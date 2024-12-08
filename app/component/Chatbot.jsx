@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Send, Bot, User, Trash2 } from "lucide-react";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const genAI = new GoogleGenerativeAI("AIzaSyCPsP7GxdSzZMtW0hVl-0rOLN7IXV7hOMo");
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
 const predefinedPrompts = [
   "Tóm tắt diễn biến chính của chiến dịch Điện Biên Phủ",
@@ -113,7 +113,6 @@ const ChatApp = () => {
           <Trash2 size={20} />
         </Button>
       </div>
-
       <Card className="flex-1 overflow-y-auto p-4 max-h-[500px] space-y-4">
         {messages.length === 0 && (
           <div className="text-center text-gray-500 py-8">
@@ -155,17 +154,33 @@ const ChatApp = () => {
                   : "bg-gray-50 text-gray-800"
               }`}
             >
-              <div className="prose max-w-none">
-                {message.text.split("\n").map((line, i) => (
-                  <p key={i} className="mb-2">
-                    {line}
-                  </p>
-                ))}
+              <div className="prose prose-sm max-w-none">
+                {message.text.split("\n").map((line, i) => {
+                  // Xử lý các dòng có định dạng markdown
+                  if (line.startsWith("**")) {
+                    return (
+                      <h3 key={i} className="font-bold text-lg mb-2">
+                        {line.replace(/\*\*/g, "")}
+                      </h3>
+                    );
+                  } else if (line.startsWith("*")) {
+                    return (
+                      <li key={i} className="ml-4 mb-2">
+                        {line.replace(/\*/g, "")}
+                      </li>
+                    );
+                  }
+                  return (
+                    <p key={i} className="mb-2">
+                      {line}
+                    </p>
+                  );
+                })}
               </div>
             </div>
           </div>
         ))}
-        
+
         {isLoading && (
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center">
@@ -192,8 +207,8 @@ const ChatApp = () => {
         )}
       </Card>
 
-      <form onSubmit={handleSubmit} className="p-4 border-t">
-        <div className="flex gap-2">
+      <form onSubmit={handleSubmit} className="p-4 border-t w-full">
+        <div className="flex gap-2 w-full">
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}

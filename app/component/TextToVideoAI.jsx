@@ -19,6 +19,7 @@ const TextToImageGenerator = () => {
   const [loading, setLoading] = useState(false);
   const [generatedImage, setGeneratedImage] = useState("");
   const [error, setError] = useState("");
+  const [predictionId, setPredictionId] = useState(null);
 
   const handleGenerate = async () => {
     if (!selectedPrompt) {
@@ -28,27 +29,39 @@ const TextToImageGenerator = () => {
 
     setLoading(true);
     setError("");
+    setGeneratedImage("");
 
     try {
-      const response = await fetch(
-        "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2",
-        {
-          method: "POST",
-          headers: {
-            Authorization: "Bearer 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",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            inputs: prompts[selectedPrompt],
-          }),
+      const response = await fetch("/api/predictions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt: prompts[selectedPrompt],
+        }),
+      });
+
+      if (!response.ok) throw new Error("Lỗi khi tạo prediction");
+
+      const prediction = await response.json();
+      setPredictionId(prediction.id);
+
+      // Poll kết quả
+      while (true) {
+        const statusResponse = await fetch(`/api/predictions/${prediction.id}`);
+        const result = await statusResponse.json();
+
+        if (result.status === "succeeded") {
+          setGeneratedImage(result.output[0]);
+          break;
+        } else if (result.status === "failed") {
+          throw new Error("Không thể tạo hình ảnh");
         }
-      );
 
-      if (!response.ok) throw new Error("Lỗi khi tạo hình ảnh");
-
-      const blob = await response.blob();
-      const imageUrl = URL.createObjectURL(blob);
-      setGeneratedImage(imageUrl);
+        // Đợi 1 giây trước khi poll lại
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
     } catch (err) {
       setError("Có lỗi xảy ra khi tạo hình ảnh. Vui lòng thử lại sau.");
     } finally {

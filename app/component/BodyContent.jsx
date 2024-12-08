@@ -1,5 +1,5 @@
 import React from "react";
-import { Calendar, ChevronRight, Play } from "lucide-react";
+import { Calendar, ArrowRight, Play } from "lucide-react";
 import TextToImageGenerator from "./TextToVideoAI";
 import ChatApp from "./Chatbot";
 
@@ -33,7 +33,7 @@ const TimelineEvent = ({ year, title, content, significance, media }) => (
             <img
               src={media.url}
               alt={title}
-              className="w-full h-64 object-cover"
+              className="w-full h-96 object-cover"
             />
           )}
         </div>
@@ -47,7 +47,7 @@ const TimelineEvent = ({ year, title, content, significance, media }) => (
           <ul className="space-y-2">
             {significance.map((item, index) => (
               <li key={index} className="flex items-start gap-2">
-                <ChevronRight className="mt-1 flex-shrink-0 text-red-600" />
+                <ArrowRight className="mt-1 flex-shrink-0 text-red-600" />
                 <span>{item}</span>
               </li>
             ))}
@@ -84,14 +84,14 @@ const BodyContent = () => {
           <div className="bg-white rounded-lg shadow-lg p-6">
             <ul className="space-y-4">
               <li className="flex items-start gap-2">
-                <ChevronRight className="mt-1 text-red-600" />
+                <ArrowRight className="mt-1 text-red-600" />
                 <span>
                   Từ năm 1951, cuộc kháng chiến chống thực dân Pháp bước vào
                   giai đoạn mới với nhiều thử thách và cơ hội.
                 </span>
               </li>
               <li className="flex items-start gap-2">
-                <ChevronRight className="mt-1 text-red-600" />
+                <ArrowRight className="mt-1 text-red-600" />
                 <span>
                   Cuộc chiến ngày càng ác liệt, Pháp tăng cường quân sự, Mỹ bắt
                   đầu can thiệp mạnh mẽ vào cuộc chiến.
@@ -258,7 +258,7 @@ const BodyContent = () => {
           </h2>
           <ul className="space-y-3">
             <li className="flex items-start gap-2">
-              <ChevronRight className="mt-1 text-red-600" />
+              <ArrowRight className="mt-1 text-red-600" />
               <span>
                 Chiến thắng Điện Biên Phủ và thắng lợi của chiến dịch Đông Xuân
                 1953-1954 đã buộc Pháp phải ký Hiệp định Genève, chấm dứt chiến
@@ -266,21 +266,21 @@ const BodyContent = () => {
               </span>
             </li>
             <li className="flex items-start gap-2">
-              <ChevronRight className="mt-1 text-red-600" />
+              <ArrowRight className="mt-1 text-red-600" />
               <span>
                 Hiệp định Genève (1954) công nhận độc lập, chủ quyền, thống nhất
                 và toàn vẹn lãnh thổ của ba nước Đông Dương.
               </span>
             </li>
             <li className="flex items-start gap-2">
-              <ChevronRight className="mt-1 text-red-600" />
+              <ArrowRight className="mt-1 text-red-600" />
               <span>
                 Miền Bắc được hoàn toàn giải phóng, tạo cơ sở vững chắc cho cuộc
                 đấu tranh thống nhất nước nhà.
               </span>
             </li>
             <li className="flex items-start gap-2">
-              <ChevronRight className="mt-1 text-red-600" />
+              <ArrowRight className="mt-1 text-red-600" />
               <span>
                 Thắng lợi là kết quả của đường lối đúng đắn của Đảng, sự lãnh
                 đạo tài tình của Chủ tịch Hồ Chí Minh và sức mạnh đại đoàn kết
