@@ -164,17 +164,25 @@ const BodyContent = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="relative bg-black h-[60vh]">
+      <div className="relative bg-black h-[100vh] group overflow-hidden">
+        {/* Container chính */}
         <img
-          src="https://vnanet.vn/Data/Articles/2020/02/03/4428190/vna_potal_90_nam_dcs_viet_nam_dang_lanh_dao_xay_dung_va_bao_ve_chinh_quyen_cach_mang_khang_chien_chong_thuc_dan_phap_thang_loi_1945_-_1954_stand.jpg"
-          alt="Kháng chiến chống Pháp"
-          className="w-full h-full object-cover opacity-50"
+          src="/banner.jpg"
+          alt="CHIẾN DỊCH ĐIỆN BIÊN PHỦ"
+          className="w-full h-full object-cover object-center opacity-70 transition-transform duration-700 group-hover:scale-110"
         />
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center p-4">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Đảng lãnh đạo cuộc kháng chiến chống thực dân Pháp
+
+        {/* Overlay gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/30 to-transparent" />
+
+        {/* Text content */}
+        <div className="absolute bottom-0 left-0 p-8 text-white">
+          <h1 className="text-4xl font-bold mb-4 transform translate-y-4 transition-transform duration-500 group-hover:translate-y-0">
+            CHIẾN DỊCH ĐIỆN BIÊN PHỦ
           </h1>
-          <p className="text-xl md:text-2xl">1951 - 1954</p>
+          <p className="max-w-2xl text-lg opacity-0 transform translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+            Giai đoạn lịch sử hào hùng của dân tộc Việt Nam
+          </p>
         </div>
       </div>
 
